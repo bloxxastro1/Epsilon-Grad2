@@ -54,37 +54,26 @@ df = df.drop(columns="Transaction Date")
 
 
 # 1. Label encode object columns
-for col in df.select_dtypes(include=['object']).columns:
+target_col = "Item"
+le_target = LabelEncoder()
+df[target_col] = le_target.fit_transform(df[target_col].astype(str))
+
+# Step 2: Drop the target column temporarily
+X = df.drop(columns=[target_col])
+y = df[target_col]
+
+# Step 3: Label encode other object columns
+for col in X.select_dtypes(include=['object']).columns:
     le = LabelEncoder()
-    df[col] = le.fit_transform(df[col].astype(str))  # convert to string just in case
+    X[col] = le.fit_transform(X[col].astype(str))
 
-# 2. Min-Max Scaling (only on numeric columns)
+# Step 4: Scale
 scaler = MinMaxScaler()
-numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
-df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+X[X.columns] = scaler.fit_transform(X[X.columns])
 
-# 3. Impute missing values (after encoding + scaling)
+# Step 5: Impute
 imputer = KNNImputer(n_neighbors=3)
-df = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
-
-# Show cleaned data
-st.write("### Dataset Preview (Cleaned):")
-st.dataframe(df.head())
-# Select target column
-# Only allow object or integer-type columns (assumed categorical) as targets
-possible_targets = df.select_dtypes(include=['object', 'category', 'int']).columns
-if len(possible_targets) == 0:
-    st.error("No valid classification targets found in this dataset.")
-    st.stop()
-target_col = st.selectbox("Select the target column (must be categorical)", possible_targets)
-# Features and Target
-X = df.drop(target_col, axis=1)
-# Encode target if it's categorical
-if df[target_col].dtype == 'object':
-    le_target = LabelEncoder()
-    y = le_target.fit_transform(df[target_col])
-else:
-    y = df[target_col]
+X = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
 
 # Train-test split
 test_size = st.slider("Test set size (%)", 10, 50, 20)
@@ -132,6 +121,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
