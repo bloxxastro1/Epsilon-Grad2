@@ -29,14 +29,14 @@ st.write("### Dataset Preview:")
 st.dataframe(df.head())
 
     # Select target column
-    if st.checkbox("Apply Label Encoding to Categorical Columns"):
-        for col in df.select_dtypes(include=['object']).columns:
-            le = LabelEncoder()
-            df[col] = le.fit_transform(df[col])
+if st.checkbox("Apply Label Encoding to Categorical Columns"):
+    for col in df.select_dtypes(include=['object']).columns:
+        le = LabelEncoder()
+        df[col] = le.fit_transform(df[col])
 
-    if st.checkbox("Apply Min-Max Scaling"):
-        scaler = MinMaxScaler()
-        df[df.columns] = scaler.fit_transform(df[df.columns])
+if st.checkbox("Apply Min-Max Scaling"):
+    scaler = MinMaxScaler()
+    df[df.columns] = scaler.fit_transform(df[df.columns])
 
     # Features and Target
     X = df.drop(target_col, axis=1)
@@ -47,47 +47,45 @@ st.dataframe(df.head())
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size/100, random_state=42)
 
     # Apply SMOTE
-    if st.checkbox("Apply SMOTE for balancing"):
-        smote = SMOTE(random_state=42)
-        X_train, y_train = smote.fit_resample(X_train, y_train)
+if st.checkbox("Apply SMOTE for balancing"):
+    smote = SMOTE(random_state=42)
+    X_train, y_train = smote.fit_resample(X_train, y_train)
 
     # Model selection
-    classifier_name = st.selectbox("Choose a classifier", (
-        "Logistic Regression", "K-Nearest Neighbors", "Decision Tree",
-        "Random Forest", "SVM", "Naive Bayes", "XGBoost"
-    ))
+classifier_name = st.selectbox("Choose a classifier", ("Logistic Regression", "K-Nearest Neighbors", "Decision Tree","Random Forest", "SVM", "Naive Bayes", "XGBoost"))
 
     # Initialize classifier
-    def get_classifier(name):
-        if name == "Logistic Regression":
-            return LogisticRegression()
-        elif name == "K-Nearest Neighbors":
-            return KNeighborsClassifier()
-        elif name == "Decision Tree":
-            return DecisionTreeClassifier()
-        elif name == "Random Forest":
-            return RandomForestClassifier()
-        elif name == "SVM":
-            return SVC()
-        elif name == "Naive Bayes":
-            return GaussianNB()
-        elif name == "XGBoost":
-            return XGBClassifier()
+def get_classifier(name):
+    if name == "Logistic Regression":
+        return LogisticRegression()
+    elif name == "K-Nearest Neighbors":
+        return KNeighborsClassifier()
+    elif name == "Decision Tree":
+        return DecisionTreeClassifier()
+    elif name == "Random Forest":
+        return RandomForestClassifier()
+    elif name == "SVM":
+        return SVC()
+    elif name == "Naive Bayes":
+           return GaussianNB()
+    elif name == "XGBoost":
+        return XGBClassifier()
 
-    clf = get_classifier(classifier_name)
+clf = get_classifier(classifier_name)
 
     # Train and predict
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
 
     # Evaluation
-    st.write("### Evaluation Metrics:")
-    st.write(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
-    st.write(f"Precision: {precision_score(y_test, y_pred, average='weighted'):.4f}")
-    st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
-    st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
-    st.text("Classification Report:")
-    st.text(classification_report(y_test, y_pred))
+st.write("### Evaluation Metrics:")
+st.write(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
+st.write(f"Precision: {precision_score(y_test, y_pred, average='weighted'):.4f}")
+st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
+st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
+st.text("Classification Report:")
+st.text(classification_report(y_test, y_pred))
+
 
 
 
