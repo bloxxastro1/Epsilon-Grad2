@@ -76,7 +76,7 @@ imputer = KNNImputer(n_neighbors=3)
 X = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
 
 # Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, 0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, np.array([[0.2]]), random_state=42)
 
 # Apply SMOTE
 
@@ -120,6 +120,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
