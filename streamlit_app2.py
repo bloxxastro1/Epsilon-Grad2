@@ -17,12 +17,16 @@ from imblearn.over_sampling import SMOTE
 st.title("ML Classifier Evaluation App")
 
 # Upload CSV
-uploaded_file = st.file_uploader("Upload your CSV dataset", type=["csv"])
+github_url = "https://raw.githubusercontent.com/your-username/your-repo/main/dirty_cafe_sales.csv"
 
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    st.write("### Dataset Preview:")
-    st.dataframe(df.head())
+@st.cache_data
+def load_data(url):
+    return pd.read_csv(url)
+
+df = load_data(github_url)
+
+st.write("### Dataset Preview:")
+st.dataframe(df.head())
 
     # Select target column
     target_col = st.selectbox("Select the target column", df.columns)
@@ -87,3 +91,4 @@ if uploaded_file is not None:
     st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
     st.text("Classification Report:")
     st.text(classification_report(y_test, y_pred))
+
