@@ -33,7 +33,7 @@ st.dataframe(df.head())
 df.drop_duplicates(inplace=True)
 for col in df.columns:
     df[col] = df[col].replace(["UNKNOWN", "ERROR", "nan"], np.nan)
-
+df.drop(["Transaction ID", "Total Spent"], axis=1, inplace=True)
 df['Transaction Date'] = pd.to_datetime(df['Transaction Date'], errors='coerce')
 df['Year'] = df['Transaction Date'].dt.year
 df['Month'] = df['Transaction Date'].dt.month
@@ -122,3 +122,4 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
