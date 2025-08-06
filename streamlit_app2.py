@@ -17,7 +17,7 @@ from imblearn.over_sampling import SMOTE
 st.title("ML Classifier Evaluation App")
 
 # Upload CSV
-github_url = "https://raw.githubusercontent.com/your-username/your-repo/main/dirty_cafe_sales.csv"
+github_url = "https://github.com/bloxxastro1/Epsilon-Grad2/blob/main/dirty_cafe_sales.csv"
 
 @st.cache_data
 def load_data(url):
@@ -91,4 +91,5 @@ st.dataframe(df.head())
     st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
     st.text("Classification Report:")
     st.text(classification_report(y_test, y_pred))
+
 
