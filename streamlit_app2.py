@@ -64,7 +64,12 @@ df = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
 st.write("### Dataset Preview:")
 st.dataframe(df.head())
 # Select target column
-target_col = st.selectbox("Select the target column", df.columns)
+# Only allow object or integer-type columns (assumed categorical) as targets
+possible_targets = df.select_dtypes(include=['object', 'category', 'int']).columns
+if len(possible_targets) == 0:
+    st.error("No valid classification targets found in this dataset.")
+    st.stop()
+target_col = st.selectbox("Select the target column (must be categorical)", possible_targets)
 # Features and Target
 X = df.drop(target_col, axis=1)
 # Encode target if it's categorical
@@ -120,6 +125,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
