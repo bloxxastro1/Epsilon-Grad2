@@ -67,7 +67,12 @@ st.dataframe(df.head())
 target_col = st.selectbox("Select the target column", df.columns)
 # Features and Target
 X = df.drop(target_col, axis=1)
-y = df[target_col]
+# Encode target if it's categorical
+if df[target_col].dtype == 'object':
+    le_target = LabelEncoder()
+    y = le_target.fit_transform(df[target_col])
+else:
+    y = df[target_col]
 
 # Train-test split
 test_size = st.slider("Test set size (%)", 10, 50, 20)
@@ -115,6 +120,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
