@@ -59,14 +59,13 @@ df = df.drop(columns="Transaction Date")
 target_col = st.selectbox("Select the target column", df.columns)
 
 # Optional preprocessing
-if st.checkbox("Apply Label Encoding to Categorical Columns"):
-    for col in df.select_dtypes(include=['object']).columns:
-        le = LabelEncoder()
-        df[col] = le.fit_transform(df[col])
 
-if st.checkbox("Apply Min-Max Scaling"):
-    scaler = MinMaxScaler()
-    df[df.columns] = scaler.fit_transform(df[df.columns])
+for col in df.select_dtypes(include=['object']).columns:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col])
+
+scaler = MinMaxScaler()
+df[df.columns] = scaler.fit_transform(df[df.columns])
 # Impute missing values
 imputer = KNNImputer(n_neighbors=3)
 df = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
@@ -81,9 +80,9 @@ test_size = st.slider("Test set size (%)", 10, 50, 20)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size/100, random_state=42)
 
 # Apply SMOTE
-if st.checkbox("Apply SMOTE for balancing"):
-    smote = SMOTE(random_state=42)
-    X_train, y_train = smote.fit_resample(X_train, y_train)
+
+smote = SMOTE(random_state=42)
+X_train, y_train = smote.fit_resample(X_train, y_train)
 
 # Model selection
 classifier_name = st.selectbox("Choose a classifier", (
@@ -122,5 +121,6 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
