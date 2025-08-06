@@ -29,7 +29,7 @@ st.write("### Dataset Preview:")
 st.dataframe(df.head())
 
     # Select target column
-    target_col = st.selectbox("Select the target column", df.columns)
+target_col = st.selectbox("Select the target column", df.columns)
 
     # Optional preprocessing
     if st.checkbox("Apply Label Encoding to Categorical Columns"):
@@ -91,5 +91,6 @@ st.dataframe(df.head())
     st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
     st.text("Classification Report:")
     st.text(classification_report(y_test, y_pred))
+
 
 
