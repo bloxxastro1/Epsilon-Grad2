@@ -29,9 +29,6 @@ st.write("### Dataset Preview:")
 st.dataframe(df.head())
 
     # Select target column
-target_col = st.selectbox("Select the target column", df.columns)
-
-    # Optional preprocessing
     if st.checkbox("Apply Label Encoding to Categorical Columns"):
         for col in df.select_dtypes(include=['object']).columns:
             le = LabelEncoder()
