@@ -26,9 +26,6 @@ def load_data(url):
 
 df = load_data(github_url)
 
-st.write("### Dataset Preview:")
-st.dataframe(df.head())
-
 # Cleaning and preprocessing
 df.drop_duplicates(inplace=True)
 for col in df.columns:
@@ -64,7 +61,8 @@ df[df.columns] = scaler.fit_transform(df[df.columns])
 # Impute missing values
 imputer = KNNImputer(n_neighbors=3)
 df = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
-
+st.write("### Dataset Preview:")
+st.dataframe(df.head())
 # Select target column
 target_col = st.selectbox("Select the target column", df.columns)
 # Features and Target
@@ -117,6 +115,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
