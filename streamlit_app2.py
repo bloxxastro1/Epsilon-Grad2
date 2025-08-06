@@ -53,16 +53,22 @@ df["Total Spent"] = df["Quantity"] * df["Price Per Unit"]
 df = df.drop(columns="Transaction Date")
 
 
-scaler = MinMaxScaler()
-for columns in df.select_dtypes(include=['object']).columns:
-    scaler.fit_transform(df[df.columns])
+# 1. Label encode object columns
 for col in df.select_dtypes(include=['object']).columns:
     le = LabelEncoder()
-    df[col] = le.fit_transform(df[col])
-# Impute missing values
+    df[col] = le.fit_transform(df[col].astype(str))  # convert to string just in case
+
+# 2. Min-Max Scaling (only on numeric columns)
+scaler = MinMaxScaler()
+numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
+df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+
+# 3. Impute missing values (after encoding + scaling)
 imputer = KNNImputer(n_neighbors=3)
 df = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
-st.write("### Dataset Preview:")
+
+# Show cleaned data
+st.write("### Dataset Preview (Cleaned):")
 st.dataframe(df.head())
 # Select target column
 # Only allow object or integer-type columns (assumed categorical) as targets
@@ -126,6 +132,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
