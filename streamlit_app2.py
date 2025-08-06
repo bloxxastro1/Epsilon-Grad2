@@ -82,10 +82,6 @@ X = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
 # Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# SMOTE
-smote = SMOTE(random_state=42)
-X_train, y_train = smote.fit_resample(X_train, y_train)
-
 # Classifier selection
 classifier_name = st.selectbox("Choose a classifier", (
     "Logistic Regression", "K-Nearest Neighbors", "Decision Tree",
@@ -123,3 +119,4 @@ st.write(f"**F1 Score**: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 
 st.markdown("### 🧾 Classification Report:")
 st.text(classification_report(y_test, y_pred, zero_division=0))
+
