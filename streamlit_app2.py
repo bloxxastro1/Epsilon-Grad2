@@ -54,15 +54,15 @@ df.loc[df["Item"] == "cake", "Price Per Unit"] = 3
 
 df["Total Spent"] = df["Quantity"] * df["Price Per Unit"]
 df = df.drop(columns="Transaction Date")
+for col in df.select_dtypes(include=['object']).columns:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col])
 
 # Select target column
 target_col = st.selectbox("Select the target column", df.columns)
 
 # Optional preprocessing
 
-for col in df.select_dtypes(include=['object']).columns:
-    le = LabelEncoder()
-    df[col] = le.fit_transform(df[col])
 
 scaler = MinMaxScaler()
 df[df.columns] = scaler.fit_transform(df[df.columns])
@@ -121,6 +121,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
