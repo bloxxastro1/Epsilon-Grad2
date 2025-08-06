@@ -58,11 +58,6 @@ for col in df.select_dtypes(include=['object']).columns:
     le = LabelEncoder()
     df[col] = le.fit_transform(df[col])
 
-# Select target column
-target_col = st.selectbox("Select the target column", df.columns)
-
-# Optional preprocessing
-
 
 scaler = MinMaxScaler()
 df[df.columns] = scaler.fit_transform(df[df.columns])
@@ -70,7 +65,8 @@ df[df.columns] = scaler.fit_transform(df[df.columns])
 imputer = KNNImputer(n_neighbors=3)
 df = pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
 
-
+# Select target column
+target_col = st.selectbox("Select the target column", df.columns)
 # Features and Target
 X = df.drop(target_col, axis=1)
 y = df[target_col]
@@ -121,6 +117,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
