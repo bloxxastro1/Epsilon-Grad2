@@ -28,6 +28,30 @@ df = load_data(github_url)
 st.write("### Dataset Preview:")
 st.dataframe(df.head())
 
+df.drop_duplicates(inplace=True)
+for col in df.columns:
+    df[col] = df[col].replace(["UNKNOWN", "ERROR", "nan"], np.nan)
+df['Transaction Date'] = pd.to_datetime(df['Transaction Date'])
+
+df['Year'] = df['Transaction Date'].dt.year
+df['Month'] = df['Transaction Date'].dt.month
+df['Day'] = df['Transaction Date'].dt.day
+df = df.dropna(subset=['Item'])
+df['Price Per Unit'] = df['Price Per Unit'].astype(float)
+df["Quantity"] = df['Quantity'].astype(float)
+df.loc[df["Item"] == "coffee", "Price Per Unit"] = 2
+df.loc[df["Item"] == "Tea", "Price Per Unit"] = 1.5
+df.loc[df["Item"] == "Sandwich", "Price Per Unit"] = 4
+df.loc[df["Item"] == "Cookie", "Price Per Unit"] = 1
+df.loc[df["Item"] == "Juice", "Price Per Unit"] = 3
+df.loc[df["Item"] == "Smoothie", "Price Per Unit"] = 4
+df.loc[df["Item"] == "Salad ", "Price Per Unit"] = 4 
+df.loc[df["Item"] == "cake", "Price Per Unit"] = 3
+df["Total Spent"] = df["Quantity"]*df["Price Per Unit"]
+df = df.drop(columns="Transaction Date")
+imputer = KNNImputer(n_neighbors=3)
+df= pd.DataFrame(imputer.fit_transform(df), columns=df.columns)
+
     # Select target column
 if st.checkbox("Apply Label Encoding to Categorical Columns"):
     for col in df.select_dtypes(include=['object']).columns:
@@ -85,6 +109,7 @@ st.write(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.4f}")
 st.write(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.4f}")
 st.text("Classification Report:")
 st.text(classification_report(y_test, y_pred))
+
 
 
 
